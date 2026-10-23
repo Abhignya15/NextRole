@@ -1,62 +1,51 @@
-function Nextsteps(){
-    return(
-        <section className="mt-10">
-              <div>
-                <h3 className="text-lg font-semibold text-slate-900">
-                  Your next steps
-                </h3>
+const nextSteps = [
+  {
+    icon: "📄",
+    title: "Upload your resume",
+    description: "Start by sharing your experience and skills.",
+  },
+  {
+    icon: "🎯",
+    title: "Define your goals",
+    description: "Choose your target roles, salary, and locations.",
+  },
+  {
+    icon: "✨",
+    title: "Explore NextRole",
+    description: "Discover tools to help you plan your next move.",
+  },
+];
 
-                <p className="mt-1 text-sm text-slate-500">
-                  A few things to get you started.
-                </p>
-              </div>
+function NextSteps() {
+  return (
+    <section className="mt-10">
+      <div>
+        <h3 className="text-lg font-semibold text-slate-900">Your next steps</h3>
+        <p className="mt-1 text-sm text-slate-500">
+          A few things to get you started.
+        </p>
+      </div>
 
-              <div className="mt-5 grid grid-cols-1 gap-4 md:grid-cols-3">
-                <div className="rounded-xl border border-slate-200 bg-white p-5">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-50 text-lg">
-                    📄
-                  </div>
+      <div className="mt-5 grid grid-cols-1 gap-4 md:grid-cols-3">
+        {nextSteps.map((step) => (
+          <div
+            key={step.title}
+            className="rounded-xl border border-slate-200 bg-white p-5"
+          >
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-50 text-lg">
+              {step.icon}
+            </div>
 
-                  <h4 className="mt-4 font-semibold text-slate-900">
-                    Upload your resume
-                  </h4>
+            <h4 className="mt-4 font-semibold text-slate-900">{step.title}</h4>
 
-                  <p className="mt-2 text-sm leading-6 text-slate-500">
-                    Start by sharing your experience and skills.
-                  </p>
-                </div>
-
-                <div className="rounded-xl border border-slate-200 bg-white p-5">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-50 text-lg">
-                    🎯
-                  </div>
-
-                  <h4 className="mt-4 font-semibold text-slate-900">
-                    Define your goals
-                  </h4>
-
-                  <p className="mt-2 text-sm leading-6 text-slate-500">
-                    Choose your target roles, salary, and locations.
-                  </p>
-                </div>
-
-                <div className="rounded-xl border border-slate-200 bg-white p-5">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-50 text-lg">
-                    ✨
-                  </div>
-
-                  <h4 className="mt-4 font-semibold text-slate-900">
-                    Explore NextRole
-                  </h4>
-
-                  <p className="mt-2 text-sm leading-6 text-slate-500">
-                    Discover tools to help you plan your next move.
-                  </p>
-                </div>
-              </div>
-            </section>
-
-    );
+            <p className="mt-2 text-sm leading-6 text-slate-500">
+              {step.description}
+            </p>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
 }
 
-export default Nextsteps
+export default NextSteps;
