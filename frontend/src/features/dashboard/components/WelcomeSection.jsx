@@ -16,7 +16,6 @@ function WelcomeSection() {
           </p>
         </div>
 
-        <Button>Set up profile →</Button>
       </div>
     </section>
   );

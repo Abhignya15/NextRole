@@ -1,4 +1,8 @@
+import { useNavigate } from 'react-router-dom';
+
 function ProfileSetupCard() {
+  const navigate = useNavigate();
+
   return (
     <section className="mt-8 rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
       <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
@@ -19,6 +23,7 @@ function ProfileSetupCard() {
 
         <button
           type="button"
+          onClick={() => navigate('/profile')}
           className="shrink-0 rounded-xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-indigo-700"
         >
           Set up profile →
