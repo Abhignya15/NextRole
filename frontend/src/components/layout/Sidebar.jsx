@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 const navItems = [
   { label: 'Dashboard', path: '/' },
   { label: 'Profile', path: '/profile' },
+  { label: 'Interview Prep', path: '/prep' },
   { label: 'Jobs', path: '/jobs' },
   { label: 'Applications', path: '/applications' },
   { label: 'Interviews', path: '/interviews' },
@@ -20,7 +21,9 @@ function Sidebar() {
 
       <nav className="space-y-2">
         {navItems.map((item) => {
-          const isActive = location.pathname === item.path;
+          const isActive =
+            location.pathname === item.path ||
+            (item.path !== '/' && location.pathname.startsWith(`${item.path}/`));
 
           return (
             <button

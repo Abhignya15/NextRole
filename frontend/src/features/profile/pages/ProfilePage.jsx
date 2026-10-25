@@ -1,36 +1,25 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import PersonalInfoForm from '../components/PersonalInfoForm';
+import ExperienceForm from '../components/ExperienceForm';
+import CareerPreferencesForm from '../components/CareerPreferencesForm';
+import ResumeUpload from '../components/ResumeUpload';
 
 const initialProfile = {
   jobTitle: '',
   experience: '',
   currentCtc: '',
   expectedCtc: '',
+  summary: '',
+  skills: '',
   targetRole: '',
   location: '',
   preference: 'Hybrid',
+  resumeName: '',
 };
 
-const PROFILE_STORAGE_KEY = 'career-profile';
-
 function ProfilePage() {
-  const [profile, setProfile] = useState(() => {
-    const savedProfile = localStorage.getItem(PROFILE_STORAGE_KEY);
-
-    if (!savedProfile) {
-      return initialProfile;
-    }
-
-    try {
-      return { ...initialProfile, ...JSON.parse(savedProfile) };
-    } catch {
-      return initialProfile;
-    }
-  });
+  const [profile, setProfile] = useState(initialProfile);
   const [saved, setSaved] = useState(false);
-
-  useEffect(() => {
-    localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(profile));
-  }, [profile]);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -43,7 +32,6 @@ function ProfilePage() {
   };
 
   const handleSave = () => {
-    localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(profile));
     setSaved(true);
   };
 
@@ -62,109 +50,10 @@ function ProfilePage() {
         </div>
 
         <div className="space-y-6">
-          <section className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
-            <h3 className="mb-4 text-sm font-semibold uppercase tracking-[0.12em] text-slate-700">
-              01 Professional Information
-            </h3>
-
-            <div className="grid gap-4 md:grid-cols-2">
-              <label className="block text-sm text-slate-700">
-                <span className="mb-2 block">Current job title</span>
-                <input
-                  type="text"
-                  name="jobTitle"
-                  value={profile.jobTitle}
-                  onChange={handleChange}
-                  placeholder="e.g. Software Engineer"
-                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-slate-700 outline-none"
-                />
-              </label>
-
-              <label className="block text-sm text-slate-700">
-                <span className="mb-2 block">Years of experience</span>
-                <input
-                  type="text"
-                  name="experience"
-                  value={profile.experience}
-                  onChange={handleChange}
-                  placeholder="e.g. 3 years"
-                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-slate-700 outline-none"
-                />
-              </label>
-            </div>
-
-            <div className="mt-4 grid gap-4 md:grid-cols-2">
-              <label className="block text-sm text-slate-700">
-                <span className="mb-2 block">Current CTC</span>
-                <input
-                  type="text"
-                  name="currentCtc"
-                  value={profile.currentCtc}
-                  onChange={handleChange}
-                  placeholder="e.g. ₹ 18 LPA"
-                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-slate-700 outline-none"
-                />
-              </label>
-
-              <label className="block text-sm text-slate-700">
-                <span className="mb-2 block">Expected CTC</span>
-                <input
-                  type="text"
-                  name="expectedCtc"
-                  value={profile.expectedCtc}
-                  onChange={handleChange}
-                  placeholder="e.g. ₹ 30 LPA"
-                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-slate-700 outline-none"
-                />
-              </label>
-            </div>
-          </section>
-
-          <section className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
-            <h3 className="mb-4 text-sm font-semibold uppercase tracking-[0.12em] text-slate-700">
-              02 Career Preferences
-            </h3>
-
-            <div className="grid gap-4 md:grid-cols-2">
-              <label className="block text-sm text-slate-700 md:col-span-2">
-                <span className="mb-2 block">Target role</span>
-                <input
-                  type="text"
-                  name="targetRole"
-                  value={profile.targetRole}
-                  onChange={handleChange}
-                  placeholder="e.g. Cloud Engineer"
-                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-slate-700 outline-none"
-                />
-              </label>
-
-              <label className="block text-sm text-slate-700 md:col-span-2">
-                <span className="mb-2 block">Preferred location</span>
-                <input
-                  type="text"
-                  name="location"
-                  value={profile.location}
-                  onChange={handleChange}
-                  placeholder="e.g. Bengaluru"
-                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-slate-700 outline-none"
-                />
-              </label>
-
-              <label className="block text-sm text-slate-700 md:col-span-2">
-                <span className="mb-2 block">Work preference</span>
-                <select
-                  name="preference"
-                  value={profile.preference}
-                  onChange={handleChange}
-                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-slate-700 outline-none"
-                >
-                  <option value="Hybrid">Hybrid</option>
-                  <option value="Remote">Remote</option>
-                  <option value="On-site">On-site</option>
-                </select>
-              </label>
-            </div>
-          </section>
+          <PersonalInfoForm profile={profile} onChange={handleChange} />
+          <ExperienceForm profile={profile} onChange={handleChange} />
+          <CareerPreferencesForm profile={profile} onChange={handleChange} />
+          <ResumeUpload profile={profile} onChange={handleChange} />
 
           <div className="flex items-center justify-end gap-3">
             {saved ? (
