@@ -1,0 +1,67 @@
+{
+  "table": "public.prep_plans",
+  "description": "Interview prep plans created by authenticated users.",
+  "columns": [
+    {
+      "name": "id",
+      "type": "uuid",
+      "nullable": false,
+      "default": "gen_random_uuid()",
+      "description": "Primary key for each prep plan."
+    },
+    {
+      "name": "plan_name",
+      "type": "text",
+      "nullable": true,
+      "default": null,
+      "description": "Human-friendly plan name."
+    },
+    {
+      "name": "target_role",
+      "type": "text",
+      "nullable": true,
+      "default": null,
+      "description": "Target role or certification."
+    },
+    {
+      "name": "interview_date",
+      "type": "date",
+      "nullable": true,
+      "default": null,
+      "description": "Interview or exam date."
+    },
+    {
+      "name": "daily_minutes",
+      "type": "integer",
+      "nullable": true,
+      "default": null,
+      "description": "Recommended daily prep time in minutes."
+    },
+    {
+      "name": "created_at",
+      "type": "timestamptz",
+      "nullable": false,
+      "default": "now()",
+      "description": "Row creation timestamp."
+    },
+    {
+      "name": "user_id",
+      "type": "uuid",
+      "nullable": true,
+      "default": null,
+      "description": "Authenticated user who owns the plan."
+    },
+    {
+      "name": "plan_data",
+      "type": "jsonb",
+      "nullable": true,
+      "default": null,
+      "description": "Form payload for nested fields like topics, topic confidence, question types, notes, mode, and preferences."
+    }
+  ],
+  "notes": [
+    "This schema keeps the core table small and predictable.",
+    "Nested UI data that does not need dedicated columns is stored under plan_data.",
+    "This avoids over-normalizing until the app needs specific reporting or filtering columns."
+  ]
+}
