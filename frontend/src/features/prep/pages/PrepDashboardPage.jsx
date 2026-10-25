@@ -2,23 +2,41 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Button from '../../../components/ui/Button';
 import PrepModeCard from '../components/PrepModeCard';
-
-const PREP_PLAN_KEY = 'nextrole-prep-plan';
+import { fetchLatestPrepPlan } from '../services/prepPlanService';
 
 function PrepDashboardPage() {
   const navigate = useNavigate();
   const [plan, setPlan] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const savedPlan = localStorage.getItem(PREP_PLAN_KEY);
+    let isMounted = true;
 
-    if (savedPlan) {
+    const loadPlan = async () => {
       try {
-        setPlan(JSON.parse(savedPlan));
-      } catch {
-        setPlan(null);
+        const latestPlan = await fetchLatestPrepPlan();
+
+        if (isMounted) {
+          setPlan(latestPlan);
+        }
+      } catch (error) {
+        console.error('Failed to load prep plan:', error);
+
+        if (isMounted) {
+          setPlan(null);
+        }
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
       }
-    }
+    };
+
+    loadPlan();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const hasPlan = Boolean(plan?.planName);
@@ -65,7 +83,11 @@ function PrepDashboardPage() {
         <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
           <h3 className="text-lg font-semibold text-slate-900">Current preparation plan</h3>
 
-          {!hasPlan ? (
+          {loading ? (
+            <div className="mt-5 rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-6 text-sm text-slate-600">
+              Loading your preparation plan...
+            </div>
+          ) : !hasPlan ? (
             <div className="mt-5 rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-6 text-center">
               <p className="text-base font-medium text-slate-900">No preparation plan yet</p>
               <p className="mt-2 text-sm text-slate-600">

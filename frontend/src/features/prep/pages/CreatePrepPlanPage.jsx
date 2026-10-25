@@ -2,8 +2,7 @@ import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Button from '../../../components/ui/Button';
 import TopicWeightageEditor from '../components/TopicWeightageEditor';
-
-const PREP_PLAN_KEY = 'nextrole-prep-plan';
+import { savePrepPlan } from '../services/prepPlanService';
 
 const defaultTopics = [
   { id: 1, name: 'React', weight: 15, confidence: 'Medium', subtopics: 'Hooks, state, performance', notes: '' },
@@ -88,7 +87,7 @@ function CreatePrepPlanPage() {
     });
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
     if (!form.planName.trim()) {
@@ -121,8 +120,14 @@ function CreatePrepPlanPage() {
       })),
     };
 
-    localStorage.setItem(PREP_PLAN_KEY, JSON.stringify(finalPlan));
-    navigate('/prep');
+    try {
+      await savePrepPlan(finalPlan);
+      navigate('/prep');
+    } catch (saveError) {
+      setError(
+        saveError?.message || 'Unable to save the preparation plan right now. Please check your Supabase configuration.'
+      );
+    }
   };
 
   return (
