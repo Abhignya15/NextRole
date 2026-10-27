@@ -124,12 +124,13 @@ export const authService = {
   loginWithGoogle: async () => {
     ensureSupabase();
 
-    // Hardcoded to the single canonical domain. Using window.location.origin
-    // here is unsafe if Vercel redirects between apex/www domains, since the
-    // PKCE code_verifier is stored in localStorage on whichever origin initiated
-    // the login, and a post-auth domain bounce breaks that lookup
+    // Fixed per environment via VITE_SITE_URL (falls back to window.location.origin
+    // for local dev if unset). Using window.location.origin alone in production is
+    // unsafe if Vercel redirects between apex/www domains, since the PKCE
+    // code_verifier is stored in localStorage on whichever origin initiated the
+    // login, and a post-auth domain bounce breaks that lookup
     // (bad_oauth_state / "OAuth state not found or expired").
-    const redirectUrl = "https://www.nextrole.space";
+    const redirectUrl = import.meta.env.VITE_SITE_URL || window.location.origin;
 
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: "google",

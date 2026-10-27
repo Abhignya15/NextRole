@@ -33,6 +33,13 @@ function AppShell() {
       const { data } = await supabase.auth.getSession();
       setSession(data.session);
       setLoading(false);
+
+      // Defense-in-depth: strip any leftover OAuth query params (e.g. ?code=...)
+      // from the address bar as soon as the session has been resolved, in case
+      // supabase-js hasn't already cleaned it up.
+      if (window.location.search) {
+        window.history.replaceState(null, '', window.location.pathname);
+      }
     };
 
     loadSession();
