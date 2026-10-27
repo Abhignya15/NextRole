@@ -1,6 +1,10 @@
 import { supabase } from '../../../services/supabase';
+import {
+  PREP_PLANS_TABLE,
+  buildPrepPlanPayload,
+  normalizeTopics,
+} from '../../../../../supabase/prepPlanContract';
 
-const TABLE_NAME = 'prep_plans';
 const ENABLE_LOCAL_TEST_BYPASS = import.meta.env.DEV && import.meta.env.VITE_ENABLE_LOCAL_AUTH_BYPASS === 'true';
 
 const isMissingAuthError = (error) => {
@@ -14,20 +18,6 @@ const isMissingAuthError = (error) => {
   );
 };
 
-const normalizeTopics = (topics = []) => {
-  if (!Array.isArray(topics)) {
-    return [];
-  }
-
-  return topics.map((topic) => ({
-    id: topic.id ?? `${topic.name || 'topic'}-${Date.now()}`,
-    name: topic.name ?? '',
-    weight: Number(topic.weight ?? 0),
-    confidence: topic.confidence ?? 'Medium',
-    subtopics: topic.subtopics ?? '',
-    notes: topic.notes ?? '',
-  }));
-};
 
 export const mapPlanRowToFormShape = (row = {}) => {
   const planData = row.plan_data && typeof row.plan_data === 'object' ? row.plan_data : {};
@@ -90,30 +80,10 @@ export const savePrepPlan = async (plan) => {
     throw new Error('You must sign in before saving a prep plan.');
   }
 
-  const payload = {
-    plan_name: plan.planName || null,
-    target_role: plan.targetRole || null,
-    interview_date: plan.interviewDate || null,
-    daily_minutes: Number(plan.dailyMinutes) || 0,
-    user_id: userId ?? '00000000-0000-0000-0000-000000000000',
-    plan_data: {
-      goal: plan.goal,
-      companyName: plan.companyName ?? '',
-      experienceYears: plan.experienceYears ?? '',
-      currentJobTitle: plan.currentJobTitle ?? '',
-      experienceLevel: plan.experienceLevel ?? 'Intermediate',
-      difficulty: plan.difficulty ?? 'Adaptive',
-      questionsPerSession: Number(plan.questionsPerSession ?? 12),
-      mode: plan.mode ?? 'Both',
-      responseMode: plan.responseMode ?? 'Both',
-      questionTypes: Array.isArray(plan.questionTypes) ? plan.questionTypes : [],
-      topics: normalizeTopics(plan.topics ?? []),
-      createdAt: plan.createdAt ?? new Date().toISOString(),
-    },
-  };
+  const payload = buildPrepPlanPayload(plan, userId);
 
   const { data, error } = await supabase
-    .from(TABLE_NAME)
+    .from(PREP_PLANS_TABLE)
     .insert([payload])
     .select()
     .single();
@@ -137,7 +107,7 @@ export const fetchLatestPrepPlan = async () => {
   }
 
   const { data, error } = await supabase
-    .from(TABLE_NAME)
+    .from(PREP_PLANS_TABLE)
     .select('*')
     .eq('user_id', userId)
     .order('created_at', { ascending: false })

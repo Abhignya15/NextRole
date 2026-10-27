@@ -18,6 +18,31 @@ The frontend initializes Supabase with the project environment values:
 
 These values are used in the frontend client setup and must never be replaced with service-role keys. Service-role keys are privileged backend credentials and must not be exposed in browser code or committed to the frontend.
 
+## Current architecture split
+
+The project is currently implemented as a frontend app with Supabase acting as the backend service. There is no separate custom backend in this repository.
+
+### Frontend
+
+- React app for pages, forms, navigation, and UI state
+- Routing handled with React Router
+- Auth and data flows triggered from UI actions
+- Feature files and page logic live in the frontend app under `frontend/src`
+
+### Supabase backend service
+
+- Supabase Auth handles Google login and session creation
+- Supabase PostgreSQL stores and retrieves application data
+- The `prep_plans` table is the main persistence layer for interview-prep plans
+- RLS enforces user ownership and access boundaries at the database level
+- The frontend uses the Supabase JavaScript client to interact with auth and PostgreSQL
+
+This is the backend layer for the current implementation. We are using Supabase as the backend service, not a separate Node.js/Express API.
+
+### Important clarification
+
+There is no additional custom backend layer in this repo right now. All application logic that interacts with auth and persistence is currently located in the frontend codebase and uses Supabase APIs directly.
+
 ## Current authentication flow
 
 The app currently supports Google sign-in through Supabase Auth. The implemented flow is:
