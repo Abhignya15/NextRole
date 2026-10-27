@@ -6,7 +6,7 @@ import routes from './router';
 import LoginPage from './features/auth/pages/LoginPage';
 import SignupPage from './features/auth/pages/SignupPage';
 import AuthCallbackPage from './features/auth/pages/AuthCallbackPage';
-import { supabase } from './services/supabase';
+import { supabase, pendingOAuthCode } from './services/supabase';
 
 function AppShell() {
   const [session, setSession] = useState(null);
@@ -30,13 +30,23 @@ function AppShell() {
     }
 
     const loadSession = async () => {
-      const { data } = await supabase.auth.getSession();
-      setSession(data.session);
+      if (pendingOAuthCode) {
+        const { data, error } = await supabase.auth.exchangeCodeForSession(pendingOAuthCode);
+
+        if (error) {
+          console.error('OAuth code exchange failed:', error);
+        }
+
+        setSession(data?.session ?? null);
+      } else {
+        const { data } = await supabase.auth.getSession();
+        setSession(data.session);
+      }
+
       setLoading(false);
 
-      // Defense-in-depth: strip any leftover OAuth query params (e.g. ?code=...)
-      // from the address bar as soon as the session has been resolved, in case
-      // supabase-js hasn't already cleaned it up.
+      // Defense-in-depth: strip any other leftover OAuth query params (e.g.
+      // ?error=...) from the address bar once session handling is done.
       if (window.location.search) {
         window.history.replaceState(null, '', window.location.pathname);
       }
