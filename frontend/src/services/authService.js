@@ -121,30 +121,81 @@ export const authService = {
     return { success: true, user: data.user, session: data.session };
   },
 
-  loginWithGoogle: async () => {
-    ensureSupabase();
+  loginWithGoogle: () => new Promise((resolve, reject) => {
+    (async () => {
+      try {
+        ensureSupabase();
 
-    // Fixed per environment via VITE_SITE_URL (falls back to window.location.origin
-    // for local dev if unset). Using window.location.origin alone in production is
-    // unsafe if Vercel redirects between apex/www domains, since the PKCE
-    // code_verifier is stored in localStorage on whichever origin initiated the
-    // login, and a post-auth domain bounce breaks that lookup
-    // (bad_oauth_state / "OAuth state not found or expired").
-    const redirectUrl = import.meta.env.VITE_SITE_URL || window.location.origin;
+        // Fixed per environment via VITE_SITE_URL (falls back to window.location.origin
+        // for local dev if unset). Using window.location.origin alone in production is
+        // unsafe if Vercel redirects between apex/www domains, since the PKCE
+        // code_verifier is stored in localStorage on whichever origin initiated the
+        // login, and a post-auth domain bounce breaks that lookup
+        // (bad_oauth_state / "OAuth state not found or expired").
+        const redirectUrl = import.meta.env.VITE_SITE_URL || window.location.origin;
 
-    const { data, error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: redirectUrl,
-      },
-    });
+        // skipBrowserRedirect keeps the main tab on the app; the Google/Supabase
+        // redirect chain happens in a small popup instead, which posts the
+        // resulting code back and closes itself (see services/supabase.js).
+        const { data, error } = await supabase.auth.signInWithOAuth({
+          provider: "google",
+          options: {
+            redirectTo: redirectUrl,
+            skipBrowserRedirect: true,
+          },
+        });
 
-    if (error) {
-      throw new Error(normalizeAuthError(error));
-    }
+        if (error) {
+          throw new Error(normalizeAuthError(error));
+        }
 
-    return { success: true, data };
-  },
+        const popup = window.open(
+          data.url,
+          "nextrole-google-signin",
+          "width=480,height=640",
+        );
+
+        if (!popup) {
+          throw new Error("Popup was blocked. Please allow popups for this site and try again.");
+        }
+
+        const cleanup = () => {
+          window.removeEventListener("message", handleMessage);
+          clearInterval(popupCheck);
+        };
+
+        const handleMessage = async (event) => {
+          if (event.origin !== window.location.origin || event.data?.type !== "nextrole-oauth-code") {
+            return;
+          }
+
+          cleanup();
+
+          const { data: sessionData, error: exchangeError } = await supabase.auth.exchangeCodeForSession(
+            event.data.code,
+          );
+
+          if (exchangeError) {
+            reject(new Error(normalizeAuthError(exchangeError)));
+            return;
+          }
+
+          resolve({ success: true, user: sessionData.user, session: sessionData.session });
+        };
+
+        window.addEventListener("message", handleMessage);
+
+        const popupCheck = setInterval(() => {
+          if (popup.closed) {
+            cleanup();
+            reject(new Error("Sign-in was cancelled."));
+          }
+        }, 500);
+      } catch (err) {
+        reject(err);
+      }
+    })();
+  }),
 
   signOut: async () => {
     ensureSupabase();

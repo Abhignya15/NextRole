@@ -21,6 +21,15 @@ if (pendingOAuthCode) {
   window.history.replaceState(null, '', strippedUrl.pathname + strippedUrl.search + strippedUrl.hash);
 }
 
+// If this window is a popup opened by the main app (see authService.loginWithGoogle),
+// hand the code back to the opener via postMessage and close immediately instead of
+// completing the sign-in here. This keeps the Google/Supabase redirect chain confined
+// to the popup so the main tab never navigates away.
+if (pendingOAuthCode && window.opener && window.opener !== window) {
+  window.opener.postMessage({ type: 'nextrole-oauth-code', code: pendingOAuthCode }, window.location.origin);
+  window.close();
+}
+
 export const supabase = supabaseUrl && supabasePublishableKey
   ? createClient(supabaseUrl, supabasePublishableKey, {
       auth: {
