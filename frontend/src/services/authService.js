@@ -124,7 +124,7 @@ export const authService = {
   loginWithGoogle: async () => {
     ensureSupabase();
 
-    const redirectUrl = `${window.location.origin}/auth/callback`;
+    const redirectUrl = window.location.origin;
 
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: "google",
