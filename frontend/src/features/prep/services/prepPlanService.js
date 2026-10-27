@@ -3,7 +3,7 @@ import {
   PREP_PLANS_TABLE,
   buildPrepPlanPayload,
   normalizeTopics,
-} from '../../../../../supabase/prepPlanContract';
+} from './prepPlanContract';
 
 const ENABLE_LOCAL_TEST_BYPASS = import.meta.env.DEV && import.meta.env.VITE_ENABLE_LOCAL_AUTH_BYPASS === 'true';
 

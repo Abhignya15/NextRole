@@ -94,7 +94,7 @@ The prep plans belong to the authenticated user, and the database is expected to
 
 ## Database schema
 
-The repository currently documents the prep-plan schema in `supabase/prep_plans.json` and the app reads and saves to the `public.prep_plans` table.
+The repository currently documents the prep-plan schema in `supabase/schema/prep_plans.json` and the app reads and saves to the `public.prep_plans` table.
 
 ```sql
 create table public.prep_plans (
@@ -124,7 +124,7 @@ This table keeps the core schema compact while allowing nested questionnaire dat
 
 ## Migration and remote database status
 
-The repository currently contains schema metadata in `supabase/prep_plans.json`, but no migration file is present in the current checkout under `supabase/migrations/20261025_add_prep_plan_data.sql`.
+The repository currently contains schema metadata in `supabase/schema/prep_plans.json`, but no migration file is present in the current checkout under `supabase/migrations/20261025_add_prep_plan_data.sql`.
 
 That means the migration path described in earlier project notes is not verifiable from this repository snapshot alone. The app’s schema assumptions are documented in the repository, but the actual remote Supabase project must still be checked to confirm whether the migration has been applied there.
 
