@@ -4,7 +4,6 @@ import Sidebar from './components/layout/Sidebar';
 import Header from './components/layout/Header';
 import routes from './router';
 import LoginPage from './features/auth/pages/LoginPage';
-import SignupPage from './features/auth/pages/SignupPage';
 import AuthCallbackPage from './features/auth/pages/AuthCallbackPage';
 import { supabase, pendingOAuthCode } from './services/supabase';
 
@@ -63,7 +62,7 @@ function AppShell() {
     };
   }, []);
 
-  const isAuthPage = ['/login', '/signup', '/auth/callback'].includes(location.pathname);
+  const isAuthPage = ['/login', '/auth/callback'].includes(location.pathname);
 
   if (loading) {
     return (
@@ -85,7 +84,6 @@ function AppShell() {
     return (
       <Routes>
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/signup" element={<SignupPage />} />
         <Route path="/auth/callback" element={<AuthCallbackPage />} />
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>

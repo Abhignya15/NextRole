@@ -47,14 +47,14 @@ There is no additional custom backend layer in this repo right now. All applicat
 
 The app currently supports Google sign-in through Supabase Auth. The implemented flow is:
 
-1. The user clicks Continue with Google on the login or signup page.
+1. The user clicks Continue with Google on the login page.
 2. Google authenticates the user through Supabase Auth.
 3. Supabase establishes an authenticated session.
 4. The user is redirected to the configured NextRole URL.
 5. React reads the active session and can access the authenticated user ID and metadata.
 6. The header displays the signed-in user’s name or email prefix, initials, and a Sign out button.
 
-This is already working in local testing. The login and signup pages are present, and the signup page currently prioritizes Google sign-in while also keeping a link to `/login`.
+This is already working in local testing. There is a single login page (Google sign-in auto-creates the account on first use), so no separate signup page exists.
 
 Local development commonly runs at:
 
