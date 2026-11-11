@@ -10,6 +10,7 @@ import { supabase, pendingOAuthCode } from './services/supabase';
 function AppShell() {
   const [session, setSession] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isNavOpen, setIsNavOpen] = useState(false);
   const location = useLocation();
 
   const handleSignOut = async () => {
@@ -64,6 +65,10 @@ function AppShell() {
 
   const isAuthPage = ['/login', '/auth/callback'].includes(location.pathname);
 
+  useEffect(() => {
+    setIsNavOpen(false);
+  }, [location.pathname]);
+
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-slate-50 text-sm text-slate-500">
@@ -92,11 +97,15 @@ function AppShell() {
 
   return (
     <div className="min-h-screen bg-slate-50">
-      <Sidebar />
+      <Sidebar isOpen={isNavOpen} onClose={() => setIsNavOpen(false)} />
 
       <main className="min-h-screen md:ml-64">
-        <Header user={session?.user} onSignOut={handleSignOut} />
-        <div className="mx-auto max-w-6xl px-8 py-10">
+        <Header
+          user={session?.user}
+          onSignOut={handleSignOut}
+          onMenuClick={() => setIsNavOpen(true)}
+        />
+        <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8 lg:py-10">
           <Routes>
             <Route path="/auth/callback" element={<AuthCallbackPage />} />
             {routes.map((route) => (

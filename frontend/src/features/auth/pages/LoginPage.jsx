@@ -1,24 +1,39 @@
 import { useState } from 'react';
-import hero from '../../../assets/hero.png';
 import Badge from '../../../components/ui/Badge';
 import Button from '../../../components/ui/Button';
 import { authService } from '../../../services/authService';
 
 const features = [
   {
-    icon: '🎯',
-    title: 'Interview prep',
-    description: 'Mock questions and a study plan built around the role and company you want.',
+    title: 'Interview Preparation',
+    description: 'Practise role-specific questions and improve with personalised feedback.',
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" className="h-5 w-5">
+        <circle cx="12" cy="12" r="8.5" />
+        <circle cx="12" cy="12" r="4.5" />
+        <circle cx="12" cy="12" r="0.8" fill="currentColor" stroke="none" />
+      </svg>
+    ),
   },
   {
-    icon: '📚',
-    title: 'Course prep',
-    description: 'Stay on top of coursework with a plan that adapts to your schedule.',
+    title: 'Learning & Coursework',
+    description: 'Turn your learning goals into structured, manageable plans.',
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" className="h-5 w-5">
+        <path d="M4 5.5A2 2 0 0 1 6 3.5h5.5v17H6a2 2 0 0 1-2-2Z" />
+        <path d="M20 5.5a2 2 0 0 0-2-2h-5.5v17H18a2 2 0 0 0 2-2Z" />
+      </svg>
+    ),
   },
   {
-    icon: '🏆',
-    title: 'Certification prep',
-    description: 'Break down exam topics and track your confidence as you go.',
+    title: 'Certification Preparation',
+    description: 'Break down exam topics, track progress and build confidence.',
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" className="h-5 w-5">
+        <circle cx="12" cy="8.5" r="4.5" />
+        <path d="M8.8 12.4 7.2 20l4.8-2.6 4.8 2.6-1.6-7.6" />
+      </svg>
+    ),
   },
 ];
 
@@ -43,11 +58,22 @@ const GoogleIcon = () => (
   </svg>
 );
 
+const Logo = ({ className = 'h-9 w-9 text-base' }) => (
+  <span
+    className={`flex items-center justify-center rounded-lg bg-violet-700 font-bold text-white ${className}`}
+    aria-hidden="true"
+  >
+    N
+  </span>
+);
+
 function LoginPage() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleGoogleLogin = async () => {
+    if (loading) return;
+
     setError('');
     setLoading(true);
 
@@ -60,84 +86,76 @@ function LoginPage() {
   };
 
   return (
-    <div className="grid min-h-screen bg-slate-50 lg:grid-cols-2">
-      <div className="relative order-2 flex flex-col justify-center gap-6 overflow-hidden bg-slate-900 px-6 py-10 text-white sm:gap-8 lg:order-1 lg:px-12 lg:py-16">
+    <div className="grid min-h-screen bg-[#F8FAFC] lg:grid-cols-2">
+      <div className="relative order-2 flex flex-col justify-center gap-6 overflow-hidden bg-[#10172A] px-6 py-10 text-white sm:gap-8 lg:order-1 lg:gap-10 lg:px-14 lg:py-16">
         <div
-          className="animate-blob-glow absolute -left-16 -top-16 h-72 w-72 rounded-full bg-indigo-600/30 blur-3xl"
-          aria-hidden="true"
-        />
-        <div
-          className="animate-blob-glow absolute bottom-0 right-0 h-80 w-80 rounded-full bg-fuchsia-500/20 blur-3xl"
-          style={{ animationDelay: '-5s' }}
-          aria-hidden="true"
-        />
-        <div
-          className="animate-blob-glow absolute left-1/3 top-1/2 h-64 w-64 rounded-full bg-purple-500/20 blur-3xl"
-          style={{ animationDelay: '-9s' }}
+          className="pointer-events-none absolute -bottom-24 -right-24 h-80 w-80 rounded-full bg-violet-600/20 blur-3xl"
           aria-hidden="true"
         />
 
-        <img src={hero} alt="" className="animate-float relative h-24 w-24 drop-shadow-2xl sm:h-32 sm:w-32" />
+        <div className="relative flex items-center gap-3">
+          <Logo />
+          <span className="text-lg font-semibold tracking-tight">NextRole</span>
+        </div>
 
         <div className="relative">
-          <Badge className="bg-indigo-500/10 text-indigo-300">YOUR NEXT CHAPTER</Badge>
-          <h1 className="mt-4 text-3xl font-bold tracking-tight">
-            Welcome to NextRole 👋
+          <Badge className="bg-violet-500/10 text-violet-300">YOUR NEXT CHAPTER</Badge>
+          <h1 className="mt-5 text-3xl font-bold tracking-tight text-white lg:text-[28px]">
+            Welcome to NextRole.
           </h1>
-          <p className="mt-2 text-base font-medium text-indigo-200">
-            Your AI-powered career preparation platform.
+          <p className="mt-2 text-base font-medium text-slate-300">
+            Your career. Your goals. Your preparation.
           </p>
-          <p className="mt-3 max-w-md leading-relaxed text-slate-300">
-            Your next career move starts here. Whether you are prepping for
-            interviews, coursework, or a certification exam, get a plan built
-            around what you are actually working toward.
+          <p className="mt-4 max-w-md text-sm leading-[1.6] text-slate-400">
+            Preparing for interviews, placements or certifications shouldn&apos;t
+            feel overwhelming. NextRole brings your preparation together with
+            personalised study plans, AI-powered practice and actionable
+            feedback.
           </p>
         </div>
 
-        <div className="relative hidden gap-3 sm:grid">
-          {features.map((feature, index) => (
+        <div className="relative grid gap-3">
+          {features.map((feature) => (
             <div
               key={feature.title}
-              className="animate-fade-in-up flex items-start gap-4 rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur-sm transition duration-300 hover:-translate-y-1 hover:border-white/20 hover:bg-white/10"
-              style={{ animationDelay: `${0.15 + index * 0.15}s` }}
+              className="flex items-start gap-4 rounded-xl border border-white/10 bg-white/[0.04] p-4 transition duration-200 ease-out hover:-translate-y-0.5 hover:border-violet-400/30"
             >
-              <span className="text-2xl" aria-hidden="true">
+              <span className="mt-0.5 text-violet-400" aria-hidden="true">
                 {feature.icon}
               </span>
               <div>
-                <p className="font-semibold text-white">{feature.title}</p>
-                <p className="mt-1 text-sm text-slate-300">{feature.description}</p>
+                <p className="text-sm font-semibold text-white">{feature.title}</p>
+                <p className="mt-1 text-sm leading-relaxed text-slate-400">{feature.description}</p>
               </div>
             </div>
           ))}
         </div>
       </div>
 
-      <div className="relative order-1 flex items-center justify-center overflow-hidden px-4 py-10 lg:order-2 lg:py-16">
+      <div className="relative order-1 flex items-center justify-center overflow-hidden px-4 py-12 lg:order-2 lg:py-16">
         <div
-          className="animate-blob-glow absolute -right-24 top-0 h-96 w-96 rounded-full bg-indigo-300/50 blur-3xl"
+          className="pointer-events-none absolute -right-20 -top-20 h-72 w-72 rounded-full bg-violet-200/40 blur-3xl"
           aria-hidden="true"
         />
         <div
-          className="animate-blob-glow absolute bottom-0 left-0 h-80 w-80 rounded-full bg-fuchsia-200/50 blur-3xl"
-          style={{ animationDelay: '-6s' }}
+          className="pointer-events-none absolute -bottom-24 -left-20 h-72 w-72 rounded-full bg-violet-100/50 blur-3xl"
           aria-hidden="true"
         />
 
-        <div className="animate-fade-in-up relative w-full max-w-lg rounded-3xl border border-slate-200 bg-white/90 p-10 shadow-xl shadow-indigo-900/5 backdrop-blur-sm">
+        <div className="animate-fade-in-up relative w-full max-w-[400px] rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
           <div className="flex items-center gap-2.5">
-            <img src={hero} alt="" className="h-10 w-10" />
-            <span className="text-base font-semibold tracking-tight text-slate-900">NextRole</span>
+            <Logo className="h-8 w-8 text-sm" />
+            <span className="text-sm font-semibold tracking-tight text-[#111827]">NextRole</span>
           </div>
 
-          <h2 className="mt-8 text-3xl font-bold text-slate-900">Sign in to NextRole</h2>
-          <p className="mt-3 text-base text-slate-500">
+          <h2 className="mt-7 text-2xl font-bold text-[#111827]">Sign in to NextRole</h2>
+          <p className="mt-2 text-sm text-slate-600">
             Continue with Google to get started.
           </p>
 
           {error ? (
             <div
-              className="mt-4 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700"
+              className="mt-4 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700"
               role="alert"
             >
               <p className="font-semibold">Unable to sign in</p>
@@ -148,7 +166,7 @@ function LoginPage() {
           <Button
             variant="secondary"
             type="button"
-            className="mt-8 flex w-full items-center justify-center gap-3 py-3.5 text-base font-medium shadow-sm transition duration-200 hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-md"
+            className="mt-6 flex w-full items-center justify-center gap-3 border-[#E2E8F0] bg-white py-3 text-sm font-medium transition duration-200 ease-out hover:!border-[#8B5CF6] hover:!bg-[#FAF8FF] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8B5CF6]/60"
             onClick={handleGoogleLogin}
             disabled={loading}
           >
